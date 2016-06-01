@@ -1,0 +1,11 @@
+#!/bin/sh
+
+. ./config
+
+mkdir -p $EXTRACTED/script $EXTRACTED/script-utf
+"$UNPACKER" -u $SRC/script.dat $EXTRACTED/script
+
+cd $EXTRACTED/script
+for I in *.script; do
+	iconv -fsjis -tutf-8 <$I >../script-utf/$I
+done

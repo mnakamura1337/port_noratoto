@@ -1,0 +1,7 @@
+# Paths
+NORATOTO_TRANS=../noratoto-trans
+EXTRACTED=extracted/noratoto
+SRC=src
+
+# Tools
+UNPACKER=../ext_tools/whale-tools/archiver
