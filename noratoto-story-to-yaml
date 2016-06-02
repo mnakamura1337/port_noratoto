@@ -1,0 +1,10 @@
+#!/bin/sh -f
+
+. ./config
+
+find "$STORY_ORIG" -name '*.story' | while read FN; do
+	F=$(basename "$FN" | sed 's/\.story//;')
+	OUT="$TRANS_YAML/$F.yaml"
+	echo "$F"
+	"$STORY2YAML" "$FN" "$OUT"
+done
