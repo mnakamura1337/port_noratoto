@@ -49,6 +49,9 @@ def process_tlg(name, fn, path)
 #    {'fn' => "arc0/sys/cursor0.png", 'px' => tags[:key_ofs_x][1], 'py' => tags[:key_ofs_y][1]},
   ]
 
+  # For files that reference nothing
+  return if tags[:key_filename].empty?
+
   body_fn = "#{@asset_dir2}/#{img[0]['fn']}"
 
   if not File.exists?(body_fn)
@@ -57,6 +60,7 @@ def process_tlg(name, fn, path)
   end
 
   body_dims = `identify -format '%w %h' '#{body_fn}'`
+  raise "identify failed on #{body_fn.inspect} while processing #{fn.inspect}" unless $?.exitstatus == 0
   body_w, body_h = body_dims.split(/ /).map { |x| x.to_i }
 
   @imgs[name.gsub(/\.tlg$/, '')] = {
@@ -93,5 +97,5 @@ File.open(file_list, 'r') { |f|
 }
 
 File.open(out_imgs, 'w') { |f|
-  f.write(@imgs.to_json)
+  f.write(JSON.pretty_generate(@imgs))
 }
