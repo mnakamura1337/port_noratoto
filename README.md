@@ -76,6 +76,21 @@ description in .ksy compiled as .rb module.
 format. This is performed by [whale2story] utility, which can be launched
 automatically on every Whale script by running `./noratoto-script-to-story`.
 
+### Translation
+
+Translation is done using extracting strings to translate into
+separate YAML file, translating it there and then reintegrating i18ned
+strings back into story file.
+
+1. Extract the strings, creating (empty) YAML translation templates
+with original language only by running `./noratoto-story-to-yaml` -
+this step requires `story2yaml` from [story_utils].
+
+2. Edit translation YAMLs, adding translation
+
+3. Reintegrate it back by running `./noratoto-yaml-to-story` - this
+requires 'yaml2story` from [story_utils].
+
 [whale-tools]: https://github.com/vn-tools/whale-tools
 [arc-unpacker]: https://github.com/vn-tools/arc_unpacker
 [story_utils]: https://github.com/mnakamura1337/story_utils

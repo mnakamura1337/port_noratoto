@@ -1,0 +1,12 @@
+#!/bin/sh -f
+
+. ./config
+
+mkdir -p "$STORY_FULL"
+
+find "$STORY_ORIG" -name '*.story' | while read JA_STORY_FN; do
+	F=$(basename "$JA_STORY_FN" | sed 's/\.story//;')
+	YAML="$TRANS_YAML/$F.yaml"
+	echo "$F"
+	"$YAML2STORY" "$JA_STORY_FN" "$YAML" "$STORY_FULL/$F.story"
+done
