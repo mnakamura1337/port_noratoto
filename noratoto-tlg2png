@@ -1,0 +1,13 @@
+#!/bin/sh
+
+. ./config
+
+find "$EXTRACTED" -name '*.tlg' | while read L; do
+	OUT=$(echo $L | sed "s,$EXTRACTED,$EXTRACTED2,; s/\.tlg$/\.png/;")
+	if [ ! -r "$OUT" ]; then
+		echo "$OUT"
+		OUT_DIR=$(dirname "$OUT")
+		mkdir -p "$OUT_DIR"
+		"$ARC_UNPACKER" --dec=kirikiri/tlg --verbosity=1 --out="$OUT_DIR" "$L"
+	fi
+done

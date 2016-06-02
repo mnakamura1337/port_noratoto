@@ -1,6 +1,7 @@
 # Paths
 NORATOTO_TRANS=../noratoto-trans
 EXTRACTED=extracted/noratoto
+EXTRACTED2=extracted2/noratoto
 WHALE_SCRIPTS="$EXTRACTED/script-utf"
 SRC=src
 SCRIPTLIST="$NORATOTO_TRANS/script-list.txt"
@@ -9,3 +10,4 @@ FILELIST="$NORATOTO_TRANS/files-list.txt"
 # Tools
 UNPACKER=../ext_tools/whale-tools/archiver
 WHALE2STORY_GEN_FILES=../whale2story/generate_filelist
+ARC_UNPACKER=../ext_tools/arc_unpacker/out/arc_unpacker
