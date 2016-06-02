@@ -1,0 +1,36 @@
+#!/bin/sh
+
+. ./config
+
+analyze_logs()
+{
+	local fn=$1
+
+	TOTAL=$(wc -l <"$fn")
+	NOT_FOUND=$(grep 'not found$' "$fn" | wc -l)
+
+	echo "$1: total $TOTAL, not found $NOT_FOUND"
+}
+
+GRAND_TOTAL=$(wc -l <"$FILELIST")
+
+mkdir -p logs
+
+for I in arc0 arc1 arc2 arc3; do
+	"$UNPACKER" -u --filenames "$FILELIST" "$SRC/$I.dat" "$EXTRACTED/$I" >logs/$I.log
+	analyze_logs logs/$I.log
+done
+
+echo "Grand total: $GRAND_TOTAL"
+GOOD=0
+rm -f logs/not-found.txt
+
+cat "$FILELIST" | while read L; do
+	if ! [ -r "$EXTRACTED/arc0/$L" -o -r "$EXTRACTED/arc1/$L" -o -r "$EXTRACTED/arc2/$L" -o -r "$EXTRACTED/arc3/$L" ]; then
+		echo "$L" >>logs/not-found.txt
+	fi
+done
+
+BAD=$(wc -l <logs/not-found.txt)
+echo "Found: $(($GRAND_TOTAL - $BAD))"
+echo "Not found: $BAD"

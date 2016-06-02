@@ -1,0 +1,18 @@
+#!/bin/sh -f
+
+. ./config
+
+rm -f "$FILELIST"
+
+echo 'Generating files list'
+cat "$SCRIPTLIST" | while read L; do
+	SCRIPT_FILE=$(echo "$L" | cut -f1)
+	SCRIPT_NAME=$(echo "$L" | cut -f2)
+	echo "$SCRIPT_NAME"
+
+	"$WHALE2STORY_GEN_FILES" "$WHALE_SCRIPTS/$SCRIPT_FILE" files-list
+	cat files-list >>files-list-all
+done
+
+sort -u <files-list-all >"$FILELIST"
+rm -f files-list files-list-all

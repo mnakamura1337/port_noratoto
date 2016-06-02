@@ -1,0 +1,29 @@
+#!/usr/bin/env ruby
+
+WHALE_SCRIPTS = `. ./config; echo -n $WHALE_SCRIPTS`
+SCRIPTLIST = `. ./config; echo -n $SCRIPTLIST`
+
+def get_first_label(fn)
+  File.open(fn, 'r') { |f|
+    f.each_line { |l|
+      l.chomp!
+      l.strip!
+      next if l == ''
+      if l[0] == '*'
+        return l[1..-1]
+      else
+        warn "#{fn}: no label found, first line is #{l.inspect}"
+        return nil
+      end
+    }
+  }
+  warn "#{fn}: empty file"
+  return nil
+end
+
+File.open(SCRIPTLIST, 'w') { |out|
+  Dir.glob("#{WHALE_SCRIPTS}/*.script").sort.each { |path|
+    fn = File.basename(path)
+    out.puts "#{fn}\t#{get_first_label(path)}"
+  }
+}
