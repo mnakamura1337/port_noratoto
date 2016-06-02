@@ -1,0 +1,16 @@
+#!/bin/sh -f
+
+. ./config
+
+cat "$SCRIPTLIST" | while read L; do
+	SCRIPT_FILE=$(echo "$L" | cut -f1)
+	SCRIPT_NAME=$(echo "$L" | cut -f2)
+	echo "$SCRIPT_NAME"
+
+	"$WHALE2STORY" \
+		"$CHARS_YAML" \
+		"$IMGS_JSON" \
+		ja \
+		"$WHALE_SCRIPTS/$SCRIPT_FILE" \
+		"$STORY_ORIG//$SCRIPT_NAME.story"
+done

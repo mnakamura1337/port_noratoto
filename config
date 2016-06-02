@@ -7,8 +7,11 @@ SRC=src
 SCRIPTLIST="$NORATOTO_TRANS/script-list.txt"
 FILELIST="$NORATOTO_TRANS/files-list.txt"
 IMGS_JSON="$NORATOTO_TRANS/imgs.json"
+CHARS_YAML="$NORATOTO_TRANS/characters.yaml"
+STORY_ORIG="$NORATOTO_TRANS/story-ja"
 
 # Tools
 UNPACKER=../ext_tools/whale-tools/archiver
 WHALE2STORY_GEN_FILES=../whale2story/generate_filelist
+WHALE2STORY=../whale2story/whale2story
 ARC_UNPACKER=../ext_tools/arc_unpacker/out/arc_unpacker
