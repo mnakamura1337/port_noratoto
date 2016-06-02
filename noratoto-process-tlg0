@@ -2,4 +2,4 @@
 
 . ./config
 
-./tlg0-generate-imgs "$FILELIST" "$EXTRACTED" arc0,arc1,arc2,arc3 "$IMGS_JSON"
+./tlg0-generate-imgs "$FILELIST" "$EXTRACTED" "$EXTRACTED2" arc0,arc1,arc2,arc3 "$IMGS_JSON"

@@ -49,17 +49,33 @@ def process_tlg(name, fn, path)
 #    {'fn' => "arc0/sys/cursor0.png", 'px' => tags[:key_ofs_x][1], 'py' => tags[:key_ofs_y][1]},
   ]
 
-  @imgs[name.gsub(/\.tlg$/, '')] = img
+  body_fn = "#{@asset_dir2}/#{img[0]['fn']}"
+
+  if not File.exists?(body_fn)
+    warn "file #{body_fn.inspect} not found, referenced from #{name.inspect}"
+    return
+  end
+
+  body_dims = `identify -format '%w %h' '#{body_fn}'`
+  body_w, body_h = body_dims.split(/ /).map { |x| x.to_i }
+
+  @imgs[name.gsub(/\.tlg$/, '')] = {
+    'ox' => body_w / 2,
+    'oy' => body_h / 2,
+    'mx' => body_w,
+    'my' => body_h,
+    'imgs' => img,
+  }
 end
 
-if ARGV.size != 4
-  puts "Usage: tlg0-generate-imgs <file-list> <asset-dir> <arc-dirs> <imgs-json>"
+if ARGV.size != 5
+  puts "Usage: tlg0-generate-imgs <file-list> <asset-dir> <asset-dir2> <arc-dirs> <imgs-json>"
   exit 0
 end
 
-file_list, @asset_dir, @arc_dirs, out_imgs = ARGV
+file_list, @asset_dir, @asset_dir2, @arc_dirs, out_imgs = ARGV
 
-@arc_dirs = arc_dirs.split(/,/)
+@arc_dirs = @arc_dirs.split(/,/)
 
 @imgs = {}
 
