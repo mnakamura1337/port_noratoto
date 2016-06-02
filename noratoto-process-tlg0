@@ -1,0 +1,5 @@
+#!/bin/sh -ef
+
+. ./config
+
+./tlg0-generate-imgs "$FILELIST" "$EXTRACTED" arc0,arc1,arc2,arc3 "$IMGS_JSON"

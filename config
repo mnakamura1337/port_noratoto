@@ -6,6 +6,7 @@ WHALE_SCRIPTS="$EXTRACTED/script-utf"
 SRC=src
 SCRIPTLIST="$NORATOTO_TRANS/script-list.txt"
 FILELIST="$NORATOTO_TRANS/files-list.txt"
+IMGS_JSON="$NORATOTO_TRANS/imgs.json"
 
 # Tools
 UNPACKER=../ext_tools/whale-tools/archiver

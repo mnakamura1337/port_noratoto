@@ -1,0 +1,81 @@
+#!/usr/bin/env ruby
+
+require 'json'
+
+require_relative 'whale_tlg0'
+require_relative '../story_utils/story'
+
+def locate_file(name)
+  @arc_dirs.each { |path|
+    fn = "#{@asset_dir}/#{path}/#{name}"
+    return [fn, path] if File.exists?(fn)
+  }
+  [nil, nil]
+end
+
+def read_tags(tlg0)
+  r = {}
+  tlg0.tags.pairs.each { |tag|
+    k = tag.key.value
+    v = if tag.value_num
+          [tag.value_num.v21, tag.value_num.v22]
+        else
+          tag.value_str.str
+        end
+    r[k] = v
+  }
+  return r
+end
+
+def tlg2png(fn)
+  fn.gsub(/\.tlg$/, '.png')
+end
+
+def process_tlg(name, fn, path)
+  begin
+    p fn
+    tlg0 = WhaleTlg0.from_file(fn)
+  rescue Kaitai::Struct::Stream::UnexpectedDataError
+    # not a TLG0 file, just skip it
+    return
+  end
+  tags = read_tags(tlg0)
+
+  cur_dir = File.dirname(name)
+
+  img = [
+    {'fn' => "#{path}/#{cur_dir}/#{tlg2png(tags[:key_filename])}", 'px' => 0, 'py' => 0},
+    {'fn' => "#{path}/#{tlg2png(name)}", 'px' => tags[:key_ofs_x][0], 'py' => tags[:key_ofs_y][0]},
+#    {'fn' => "arc0/sys/cursor0.png", 'px' => tags[:key_ofs_x][1], 'py' => tags[:key_ofs_y][1]},
+  ]
+
+  @imgs[name.gsub(/\.tlg$/, '')] = img
+end
+
+if ARGV.size != 4
+  puts "Usage: tlg0-generate-imgs <file-list> <asset-dir> <arc-dirs> <imgs-json>"
+  exit 0
+end
+
+file_list, @asset_dir, @arc_dirs, out_imgs = ARGV
+
+@arc_dirs = arc_dirs.split(/,/)
+
+@imgs = {}
+
+File.open(file_list, 'r') { |f|
+  f.each_line { |l|
+    l.chomp!
+    next unless l =~ /\.tlg$/
+    fn, path = locate_file(l)
+    if fn.nil?
+      warn "unable to locale #{l.inspect}"
+    else
+      process_tlg(l, fn, path)
+    end
+  }
+}
+
+File.open(out_imgs, 'w') { |f|
+  f.write(@imgs.to_json)
+}
