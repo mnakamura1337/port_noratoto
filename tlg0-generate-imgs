@@ -31,12 +31,34 @@ def tlg2png(fn)
   fn.gsub(/\.tlg$/, '.png')
 end
 
+def get_img_size(fn)
+  dims = `identify -format '%w %h' '#{fn}'`
+  raise "identify failed on #{fn.inspect}" unless $?.exitstatus == 0
+  dims.split(/ /).map { |x| x.to_i }
+end
+
+# name = "bg/BG_001_07_0.tlg"
+# fn = "extracted/noratoto/arc0/bg/BG_001_07_0.tlg"
+# path = "arc0"
 def process_tlg(name, fn, path)
   begin
     p fn
     tlg0 = WhaleTlg0.from_file(fn)
   rescue Kaitai::Struct::Stream::UnexpectedDataError
-    # not a TLG0 file, just skip it
+    # not a TLG0 file, just store sizes
+    png_fn = "#{path}/#{tlg2png(name)}"
+    body_w, body_h = get_img_size("#{@asset_dir2}/#{png_fn}")
+
+    @imgs[name.gsub(/\.tlg$/, '')] = {
+      'ox' => body_w / 2,
+      'oy' => body_h / 2,
+      'mx' => body_w,
+      'my' => body_h,
+      'imgs' => [
+        {'fn' => png_fn, 'px' => 0, 'py' => 0},
+      ],
+    }
+
     return
   end
   tags = read_tags(tlg0)
@@ -59,9 +81,7 @@ def process_tlg(name, fn, path)
     return
   end
 
-  body_dims = `identify -format '%w %h' '#{body_fn}'`
-  raise "identify failed on #{body_fn.inspect} while processing #{fn.inspect}" unless $?.exitstatus == 0
-  body_w, body_h = body_dims.split(/ /).map { |x| x.to_i }
+  body_w, body_h = get_img_size(body_fn)
 
   @imgs[name.gsub(/\.tlg$/, '')] = {
     'ox' => body_w / 2,
